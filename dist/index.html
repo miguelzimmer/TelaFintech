@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fintrack - Histórico de Despesas</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen antialiased bg-[#09090b]">
+  <header class="border-b border-[#1f1f23] bg-[#09090b]">
+    <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 bg-[#22c55e] rounded flex items-center justify-center shadow-md shadow-green-500/10">
+          <span class="text-black font-extrabold text-sm font-sans">F</span>
+        </div>
+        <span class="text-white font-bold text-lg tracking-tight">fintrack</span>
+      </div>
+      
+      <!-- User Info -->
+      <div class="text-xs text-zinc-500 font-medium hover:text-zinc-400 transition-colors cursor-pointer">
+        Lucas Carvalho
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-8">
+    
+    <!-- Title Section -->
+    <div class="mb-8">
+      <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Histórico de Despesas</h1>
+      <p id="transaction-count" class="text-xs text-zinc-500 mt-1 font-mono">15 transações encontradas</p>
+    </div>
+
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      
+      <!-- Card: SAÍDAS -->
+      <div class="bg-[#121214] border border-[#1f1f23] rounded-xl p-5 hover:border-red-500/20 transition-all duration-300 relative group overflow-hidden">
+        <div class="absolute -right-8 -bottom-8 w-24 h-24 bg-red-500/2 rounded-full blur-2xl group-hover:bg-red-500/5 transition-all duration-300"></div>
+        <div class="flex items-center gap-2 mb-2 text-rose-500">
+          <i data-lucide="arrow-down-left" class="h-4 w-4"></i>
+          <span class="text-xs font-bold uppercase tracking-wider">Saídas</span>
+        </div>
+        <div id="total-out" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          R$ 3.707,10
+        </div>
+      </div>
+
+      <!-- Card: ENTRADAS -->
+      <div class="bg-[#121214] border border-[#1f1f23] rounded-xl p-5 hover:border-emerald-500/20 transition-all duration-300 relative group overflow-hidden">
+        <div class="absolute -right-8 -bottom-8 w-24 h-24 bg-emerald-500/2 rounded-full blur-2xl group-hover:bg-emerald-500/5 transition-all duration-300"></div>
+        <div class="flex items-center gap-2 mb-2 text-emerald-400">
+          <i data-lucide="arrow-up-right" class="h-4 w-4"></i>
+          <span class="text-xs font-bold uppercase tracking-wider">Entradas</span>
+        </div>
+        <div id="total-in" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          R$ 18.800,00
+        </div>
+      </div>
+
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-3 mb-8 relative">
+      <div class="relative flex-1">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+          <i data-lucide="search" class="h-4 w-4 text-zinc-500"></i>
+        </span>
+        <input type="text" id="search-input" placeholder="Buscar transação..." 
+               class="w-full bg-[#121214] border border-[#1f1f23] rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-700 focus:ring-1 focus:ring-zinc-800 transition duration-200">
+      </div>
+    
+      <div class="flex gap-2 relative">
+       
+        <div class="relative">
+          <button id="filter-btn" class="flex items-center gap-2 px-4 py-2.5 bg-[#121214] border border-[#1f1f23] rounded-lg text-zinc-400 hover:text-zinc-200 hover:border-zinc-700 transition duration-200 text-sm font-medium">
+            <i data-lucide="sliders-horizontal" class="h-4 w-4"></i>
+            <span>Filtros</span>
+          </button>
+          
+         
+          <div id="filter-menu" class="hidden absolute right-0 mt-2 w-56 bg-[#121214] border border-[#1f1f23] rounded-lg shadow-xl z-30 p-3 space-y-4">
+            <div>
+              <h3 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Tipo</h3>
+              <div class="flex gap-2">
+                <button onclick="setTypeFilter('all')" id="type-all" class="flex-1 py-1 px-2 text-xs rounded bg-zinc-800 text-white font-medium transition cursor-pointer">Todos</button>
+                <button onclick="setTypeFilter('income')" id="type-income" class="flex-1 py-1 px-2 text-xs rounded bg-transparent text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition cursor-pointer">Entradas</button>
+                <button onclick="setTypeFilter('expense')" id="type-expense" class="flex-1 py-1 px-2 text-xs rounded bg-transparent text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition cursor-pointer">Saídas</button>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Categorias</h3>
+              <div class="grid grid-cols-1 gap-1 max-h-40 overflow-y-auto pr-1">
+                <button onclick="toggleCategoryFilter('all')" id="cat-all" class="text-left py-1.5 px-2 text-xs rounded bg-zinc-800 text-white transition cursor-pointer">Todas</button>
+                <button onclick="toggleCategoryFilter('Alimentação')" id="cat-Alimentação" class="text-left py-1.5 px-2 text-xs rounded bg-transparent text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition cursor-pointer">Alimentação</button>
+                <button onclick="toggleCategoryFilter('Receita')" id="cat-Receita" class="text-left py-1.5 px-2 text-xs rounded bg-transparent text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition cursor-pointer">Receita</button>
+                <button onclick="toggleCategoryFilter('Transporte')" id="cat-Transporte" class="text-left py-1.5 px-2 text-xs rounded bg-transparent text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition cursor-pointer">Transporte</button>
+                <button onclick="toggleCategoryFilter('Streaming')" id="cat-Streaming" class="text-left py-1.5 px-2 text-xs rounded bg-transparent text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition cursor-pointer">Streaming</button>
+                <button onclick="toggleCategoryFilter('Moradia')" id="cat-Moradia" class="text-left py-1.5 px-2 text-xs rounded bg-transparent text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition cursor-pointer">Moradia</button>
+                <button onclick="toggleCategoryFilter('Saúde')" id="cat-Saúde" class="text-left py-1.5 px-2 text-xs rounded bg-transparent text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition cursor-pointer">Saúde</button>
+                <button onclick="toggleCategoryFilter('Lazer')" id="cat-Lazer" class="text-left py-1.5 px-2 text-xs rounded bg-transparent text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition cursor-pointer">Lazer</button>
+              </div>
+            </div>
+          </div>
+        </div>
+       
+        <div class="relative">
+          <button id="sort-btn" class="flex items-center gap-2 px-4 py-2.5 bg-[#121214] border border-[#1f1f23] rounded-lg text-zinc-400 hover:text-zinc-200 hover:border-zinc-700 transition duration-200 text-sm font-medium">
+            <span id="sort-label">Mais recente</span>
+            <i data-lucide="chevron-down" class="h-4 w-4"></i>
+          </button>
+                   
+          <div id="sort-menu" class="hidden absolute right-0 mt-2 w-44 bg-[#121214] border border-[#1f1f23] rounded-lg shadow-xl z-30 py-1">
+            <button onclick="setSort('recent')" class="block w-full text-left px-4 py-2 text-xs text-zinc-300 hover:bg-zinc-800 hover:text-white transition cursor-pointer">Mais recente</button>
+            <button onclick="setSort('oldest')" class="block w-full text-left px-4 py-2 text-xs text-zinc-300 hover:bg-zinc-800 hover:text-white transition cursor-pointer">Mais antigo</button>
+            <button onclick="setSort('highest')" class="block w-full text-left px-4 py-2 text-xs text-zinc-300 hover:bg-zinc-800 hover:text-white transition cursor-pointer">Maior valor</button>
+            <button onclick="setSort('lowest')" class="block w-full text-left px-4 py-2 text-xs text-zinc-300 hover:bg-zinc-800 hover:text-white transition cursor-pointer">Menor valor</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="transactions-container" class="space-y-8">
+    </div>
+
+    <div id="empty-state" class="hidden flex-col items-center justify-center py-16 text-center">
+      <div class="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-4">
+        <i data-lucide="search-x" class="h-6 w-6 text-zinc-500"></i>
+      </div>
+      <p class="text-zinc-400 font-semibold">Nenhuma transação encontrada</p>
+      <p class="text-zinc-600 text-xs mt-1">Tente alterar os termos de busca ou filtros.</p>
+    </div>
+
+  </main>
+
+  <footer class="max-w-4xl mx-auto px-4 py-12 border-t border-[#1f1f23] text-center text-xs text-zinc-600">
+    <p>fintrack &copy; 2026. Feito com Tailwind CSS v4.</p>
+  </footer>
+
+  <script src="./js/index.js"> </script>
+</body>
+</html>
